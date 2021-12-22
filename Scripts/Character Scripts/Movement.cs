@@ -15,9 +15,9 @@ public class Movement : MonoBehaviour
 
     public virtual void RunAndJump(float movementX)
     {
-
+        
         Jump();
-        Run(movementX);
+        Run();
 
         if (!CharacterScript.isAttacking)
         {
@@ -30,7 +30,7 @@ public class Movement : MonoBehaviour
         
     }
 
-    public virtual void Run(float movementX)
+    public virtual void Run()
     {
         if (CharacterScript.isGround && !CharacterScript.isAttacking)
         {
@@ -38,13 +38,13 @@ public class Movement : MonoBehaviour
             {
 
                 //Moving animation 
-                if (movementX > 0)
+                if (CharacterScript.movementX > 0)
                 {
                     //moving right
                     CharacterScript.sr.flipX = false;
                     CharacterScript.anim.Run();
                 }
-                else if (movementX < 0)
+                else if (CharacterScript.movementX < 0)
                 {
                     //moving left
                     CharacterScript.sr.flipX = true;
@@ -69,6 +69,7 @@ public class Movement : MonoBehaviour
             CharacterScript.isGround = false;
             CharacterScript.isJumpPress = false;
 
+            Debug.Log("this is Jump()");
             //can be replace by myBody.velocity = new Vector2(x, y);
             CharacterScript.myBody.AddForce(new Vector2(0f, CharacterScript.jump_Force), ForceMode2D.Impulse);
             CharacterScript.anim.Jump(); //Play animation
@@ -139,11 +140,13 @@ public class Movement : MonoBehaviour
 
             StartCoroutine(CharacterScript.anim.HitComplete());
 
+            CharacterScript.healthBar.SetHealth(CharacterScript.current_health);
+
             //Push back
             pushBack();
 
             //Minus health
-            CharacterScript.health -= CharacterScript._enemy.damage;
+            CharacterScript.current_health -= CharacterScript._enemy.damage;
         }
     }
 
@@ -170,11 +173,16 @@ public class Movement : MonoBehaviour
             //Play animation death
             CharacterScript.anim.Death();
 
-            //Disable movement
-            CharacterScript.myBody.constraints = RigidbodyConstraints2D.FreezeAll;
+            CharacterScript.healthBar.SetHealth(0);
 
             //Go throught
-            GetComponent<Collider2D>().enabled = false;
+            GetComponent<Collider2D>().isTrigger = true;
+
+            if (CharacterScript.isGround)
+            {
+                //Disable Falling
+                CharacterScript.myBody.constraints = RigidbodyConstraints2D.FreezeAll;
+            }
 
         }
     }
@@ -182,33 +190,37 @@ public class Movement : MonoBehaviour
 
     public virtual void StandUp()
     {
-        if(!CharacterScript.isDead && CharacterScript.anim.currentState == CharacterScript.anim.DEATH_ANIMATION)
+        if(CharacterScript._isRespawnPress && !CharacterScript._isStandingUp)
         {
 
             //Play animation StandUp
-            try
-            {
-                CharacterScript._isStandingUp = true;
-                CharacterScript.anim.StandUp();
-                StartCoroutine(CharacterScript.anim.StandUpComplete());
-            }
-            catch
-            {
-                CharacterScript.anim.Idle();
-            }
+            CharacterScript._isStandingUp = true;
+            CharacterScript._isRespawnPress = false;
+           
+            CharacterScript.anim.StandUp();
+            StartCoroutine(CharacterScript.anim.StandUpComplete());
+            
+            Debug.Log("Reset player");
+            CharacterScript.anim.Idle();
 
-            if (!CharacterScript._isStandingUp)
-            {
+            //Not go throught
+            GetComponent<Collider2D>().isTrigger = false;
 
-                //Enable Movement
-                CharacterScript.myBody.constraints = RigidbodyConstraints2D.None;
-
-                //Not go throught
-                GetComponent<Collider2D>().enabled = true;
-
-            }
+            //Enable Movement
+            CharacterScript.myBody.constraints = RigidbodyConstraints2D.None;
+            CharacterScript.myBody.constraints = RigidbodyConstraints2D.FreezeRotation;
 
         }
     }
 
+    public void Respawn()
+    {
+        CharacterScript._isRespawnPress = true;
+        CharacterScript.isDead = false;
+        transform.position = CharacterScript.RespawnPoint.position;
+        CharacterScript.current_health = CharacterScript.max_health;
+        CharacterScript.healthBar.SetHealth(CharacterScript.max_health);
+
+        StandUp();
+    }
 }

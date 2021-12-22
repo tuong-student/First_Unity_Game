@@ -39,4 +39,12 @@ public class Oncollider2D : Oncollider2DFather
             CharacterScript.isTraped = true;
         }
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag(GROUND_TAG))
+        {
+            CharacterScript.isGround = true;
+        }
+    }
 }

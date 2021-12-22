@@ -11,16 +11,10 @@ public class Enemy : Character
         Awaken();
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update()
     {
-        if(this.health <= 0)
+        if(this.current_health <= 0)
         {
             isDead = true;
         }
@@ -33,22 +27,8 @@ public class Enemy : Character
     // FixedUpdate is called after a short delay
     private void FixedUpdate()
     {
+        anim.Run();
         myBody.velocity = new Vector2(speed, myBody.velocity.y);
-        if (isDead)
-        {
-            movementScript.Dead();
-
-        }
-        else
-        {
-            movementScript.StandUp();
-            if (!_isStandingUp)
-            {
-
-                anim.Run();
-                movementScript.Hit();
-
-            }
-        }
+        
     }
 }

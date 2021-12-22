@@ -63,6 +63,8 @@ public class AnimationScript : MonoBehaviour
     {
         yield return new WaitForSeconds(animationTime);
         CharacterScript._isStandingUp = false;
+        Debug.Log("isStandingUp = false");
+
     }
 
     public void Idle()

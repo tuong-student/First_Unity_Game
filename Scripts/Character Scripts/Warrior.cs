@@ -5,8 +5,7 @@ using UnityEngine;
 public class Warrior : Character
 {
     [SerializeField]
-    private int Warrior_jump_Force = 10;
-
+    private int Warrior_jump_Force = 8;
 
     private void Awake()
     {
@@ -18,25 +17,20 @@ public class Warrior : Character
     // Start is called before the first frame update
     void Start()
     {
+        healthBar.SetMaxHealth(max_health);
+        healthBar.SetHealth(max_health);
         
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(health <= 0)
-        {
-            isDead = true;
-        }
-        else
-        {
-            isDead = false;
-        }
+        ReadInput();
         jump_Force = Warrior_jump_Force;
         movementX = Input.GetAxisRaw("Horizontal");
-        ReadInput();
     }
 
+    // Called base on use physical speed 
     private void FixedUpdate()
     {
         Move(movementX);

@@ -38,5 +38,6 @@ public class Oncollider2DEnemy : Oncollider2DFather
         {
             CharacterScript.isTraped = true;
         }
+
     }
 }

@@ -10,13 +10,17 @@ public class Door : MonoBehaviour
     private GameObject spawedEnemy;
 
     [SerializeField]
-    private Transform Open_Door, Close_Door;
+    private Transform[] Right_Open_Doors;
+
+    [SerializeField]
+    private Transform[] Left_Open_Doors;
 
     private int randomIndex, randomSide;
 
     // Start is called before the first frame update
     void Start()
     {
+        StartCoroutine(SpawnMonster());
         StartCoroutine(SpawnMonster());
     }
 
@@ -41,15 +45,18 @@ public class Door : MonoBehaviour
             //left side
             if (randomSide == 0)
             {
-                spawedEnemy.transform.position = Open_Door.position;
-                spawedEnemy.GetComponent<Enemy>().speed = Random.Range(4, 6);
+                //Pick random left to spawn enemy
+                int LeftRandomIndex = Random.Range(0, Left_Open_Doors.Length);
+                spawedEnemy.transform.position = Left_Open_Doors[LeftRandomIndex].position;
+                spawedEnemy.GetComponent<Enemy>().speed = Random.Range(4, 10);
                 spawedEnemy.transform.localScale = new Vector3(-1f, 1f, 1f);
             }
             else
             {
                 //right side
-                spawedEnemy.transform.position = Close_Door.position;
-                spawedEnemy.GetComponent<Enemy>().speed = -Random.Range(4, 6);
+                int RightRandomIndex = Random.Range(0, Right_Open_Doors.Length);
+                spawedEnemy.transform.position = Right_Open_Doors[RightRandomIndex].position;
+                spawedEnemy.GetComponent<Enemy>().speed = -Random.Range(4, 10);
             }
 
         }

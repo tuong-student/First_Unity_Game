@@ -14,9 +14,15 @@ public class Character : MonoBehaviour
     [SerializeField]
     internal Movement movementScript;
 
+    [SerializeField]
+    internal Transform RespawnPoint;
+
+    public HealthBar healthBar;
+
     //Basic variales
-    public int _health = 100;
-    public int _damage = 15;
+    public int _max_health = 100;
+    public int _current_health;
+    public int _damage = 10;
     public int _mana = 100;
     public int _move_Force = 5;
     public int _max_Speed = 50;
@@ -28,6 +34,7 @@ public class Character : MonoBehaviour
     internal bool _isAttacking = false;
     internal bool _isAttackPress = false;
     internal bool _isJumpPress = false;
+    internal bool _isRespawnPress = false;
     internal bool _isHited = false;
     internal bool _isHitting = false;
     internal bool _isTraped = false;
@@ -46,37 +53,43 @@ public class Character : MonoBehaviour
     {
         myBody = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
-
+        current_health = max_health;
     }
 
     public void ReadInput()
     {
-        if (Input.GetButtonDown("Jump") && isGround)
+        if (current_health <= 0) isDead = true;
+        if (!isDead)
         {
-            isJumpPress = true;
-        }
 
-        if (Input.GetKeyDown(KeyCode.J) && !isAttacking)
-        {
-            isAttackPress = true;
-        }
+            if (Input.GetButtonDown("Jump") && isGround)
+            {
+                isJumpPress = true;
+            }
 
-        if(health <= 0)
-        {
-            isDead = true;
+            if (Input.GetKeyDown(KeyCode.J) && !isAttacking)
+            {
+                isAttackPress = true;
+            }
+
         }
         else
         {
-            isDead = false;
+
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                movementScript.Respawn();
+            }
+
         }
+
     }
 
     public virtual void Move(float movementX)
     {
         if (!isDead)
         {
-            movementScript.StandUp();
-            
+
             movementScript.Attach();
 
             movementScript.RunAndJump(movementX);
@@ -86,6 +99,7 @@ public class Character : MonoBehaviour
         }
         else
         {
+
             movementScript.Dead();
 
         }
@@ -133,10 +147,15 @@ public class Character : MonoBehaviour
     }
 
     //Basic variable
-    public int health
+    public int max_health
     {
-        get{ return this._health; }
-        set{ this._health = value; }
+        get { return this._max_health; }
+        set { this._max_health = value; }
+    }
+    public int current_health
+    {
+        get{ return this._current_health; }
+        set{ this._current_health = value; }
     }
     public int damage
     {
@@ -171,7 +190,7 @@ public class Character : MonoBehaviour
 
     public void Info()
     {
-        Debug.Log("health: " + health);
+        Debug.Log("health: " + current_health);
         Debug.Log("mana: " + mana);
         Debug.Log("jump_Force: " + jump_Force);
     }

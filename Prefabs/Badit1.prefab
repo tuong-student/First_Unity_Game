@@ -15,8 +15,8 @@ GameObject:
   - component: {fileID: 2586584957552694779}
   - component: {fileID: 1562253655}
   - component: {fileID: 4082256885793668176}
-  - component: {fileID: -1039522193724096932}
   - component: {fileID: -6750043002179186749}
+  - component: {fileID: 864068012}
   m_Layer: 6
   m_Name: Badit1
   m_TagString: Enemy
@@ -161,7 +161,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 4082256885793668176}
-  oncollider2DScript: {fileID: -1039522193724096932}
+  oncollider2DScript: {fileID: 864068012}
   movementScript: {fileID: -6750043002179186749}
   _health: 100
   _damage: 15
@@ -170,9 +170,6 @@ MonoBehaviour:
   _max_Speed: 10
   _jump_Force: 10
   _character_Name: 
-  _isDead: 0
-  _isAttacking: 0
-  _isAttackPress: 0
   speed: 0
 --- !u!114 &4082256885793668176
 MonoBehaviour:
@@ -187,19 +184,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CharacterScript: {fileID: 1562253655}
---- !u!114 &-1039522193724096932
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4719689510237535671}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9e5960d80c58bb4c8ef89100e22a656, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CharacterScript: {fileID: 1562253655}
 --- !u!114 &-6750043002179186749
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -210,6 +194,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1af70fbd5c557c8428d82ef6ff946b3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CharacterScript: {fileID: 1562253655}
+--- !u!114 &864068012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4719689510237535671}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ba60163196c04c4ea91629a7577b3e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   CharacterScript: {fileID: 1562253655}
