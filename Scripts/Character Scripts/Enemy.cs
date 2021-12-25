@@ -8,7 +8,9 @@ public class Enemy : Character
 
     private void Awake()
     {
+        max_health = 10;
         Awaken();
+        character_name = "Badit";
     }
 
     // Update is called once per frame
@@ -18,17 +20,19 @@ public class Enemy : Character
         {
             isDead = true;
         }
-        else
-        {
-            isDead = false;
-        }
     }
 
     // FixedUpdate is called after a short delay
     private void FixedUpdate()
     {
-        anim.Run();
-        myBody.velocity = new Vector2(speed, myBody.velocity.y);
-        
+        if (!isDead)
+        {
+            myBody.velocity = new Vector2(speed, myBody.velocity.y);
+            anim.Run();
+        }
+        else
+        {
+            movementScript.Dead();
+        }
     }
 }

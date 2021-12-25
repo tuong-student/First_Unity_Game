@@ -7,12 +7,6 @@ public class Movement : MonoBehaviour
     [SerializeField]
     Character CharacterScript;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     public virtual void RunAndJump(float movementX)
     {
         
@@ -90,44 +84,74 @@ public class Movement : MonoBehaviour
 
     }
 
-    public virtual void Attach()
+    public void Attack()
     {
-        //Set isAttacking = true
-        //Play animation
+        //Set isAttacking = true .
+        //Play animation .
+        //Play attack sound .
+        //Check if player turn left or right .
+        //Detect all enemy in range .
         //Deal damage for all enemy in range
-        //Set isAttacking = false after animation done
-        //Reset the movement speed
+        //Set isAttacking = false after animation done .
         if (!CharacterScript.isAttacking && CharacterScript.isAttackPress)
         {
-            Debug.Log("movement Attack is running");
-            CharacterScript.isAttackPress = false;
             CharacterScript.isAttacking = true;
-            try
+            CharacterScript.isAttackPress = false;
+            //Play anim
+            try 
             {
                 if (CharacterScript.isGround)
                 {
-                    //Attack1
                     CharacterScript.anim.Attack1();
                 }
                 else
                 {
-                    //Attack2
                     CharacterScript.anim.Attack2();
                 }
-
             }
             catch
             {
-                //This character isn't has Attack1 or Attack2
+                //This character don't have Attack1 or 2
                 CharacterScript.anim.Attack();
             }
-            int tempMoveSpeed = CharacterScript.move_Force;
-            StartCoroutine(CharacterScript.anim.AttackComplete()); //Set isAttaking = false
-            CharacterScript.move_Force = tempMoveSpeed; //Reset the movement speed
+            //Play sound
+            CharacterScript.attackSound.Play();
+
+            //Check turn
+            Transform attackPoint;
+            if (CharacterScript.sr.flipX)
+            {
+                //Turn left
+                attackPoint = CharacterScript.LeftattackPoint;
+            }
+            else
+            {
+                //Turn right
+                attackPoint = CharacterScript.RightattackPoint;
+            }
+
+            //Detect all enemy
+            Collider2D[] hitEnemies;
+
+            hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, CharacterScript.attackRange, CharacterScript.enemyLayers);
+
+            //Deal damage
+            Character enemyScript;
+            foreach(Collider2D enemy in hitEnemies)
+            {
+                enemyScript = enemy.GetComponent<Character>(); //Get this enemy Script
+                if (!enemyScript.isDead)
+                {
+                    enemyScript.isHited = true;
+                    enemyScript.movementScript.Hit(CharacterScript.damage);
+                }
+            }
+            //Set isAttacking = false
+            StartCoroutine(CharacterScript.anim.AttackComplete());
         }
     }
 
-    public virtual void Hit()
+    public virtual void Hit(int damage)
     {
         if (CharacterScript.isHited && !CharacterScript.isHitting)
         {
@@ -140,13 +164,14 @@ public class Movement : MonoBehaviour
 
             StartCoroutine(CharacterScript.anim.HitComplete());
 
-            CharacterScript.healthBar.SetHealth(CharacterScript.current_health);
+            //Play sound
+            CharacterScript.hitSound.Play();
 
             //Push back
             pushBack();
 
             //Minus health
-            CharacterScript.current_health -= CharacterScript._enemy.damage;
+            CharacterScript.current_health -= damage;
         }
     }
 
@@ -155,12 +180,12 @@ public class Movement : MonoBehaviour
         if (!CharacterScript.sr.flipX)
         {
             //Character is looking right
-            CharacterScript.myBody.AddForce(new Vector2(-5f, 5f), ForceMode2D.Impulse);
+            CharacterScript.myBody.AddForce(new Vector2(-5f, 2f), ForceMode2D.Impulse);
         }
         else
         {
             //Character is looking left
-            CharacterScript.myBody.AddForce(new Vector2(5f, 5f), ForceMode2D.Impulse);
+            CharacterScript.myBody.AddForce(new Vector2(5f, 2f), ForceMode2D.Impulse);
         }
     }
 
@@ -173,7 +198,8 @@ public class Movement : MonoBehaviour
             //Play animation death
             CharacterScript.anim.Death();
 
-            CharacterScript.healthBar.SetHealth(0);
+            //Play sound
+            CharacterScript.deadSound.Play();
 
             //Go throught
             GetComponent<Collider2D>().isTrigger = true;
@@ -215,8 +241,8 @@ public class Movement : MonoBehaviour
 
     public void Respawn()
     {
-        CharacterScript._isRespawnPress = true;
         CharacterScript.isDead = false;
+        CharacterScript._isRespawnPress = true;
         transform.position = CharacterScript.RespawnPoint.position;
         CharacterScript.current_health = CharacterScript.max_health;
         CharacterScript.healthBar.SetHealth(CharacterScript.max_health);

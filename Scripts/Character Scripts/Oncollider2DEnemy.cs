@@ -25,15 +25,6 @@ public class Oncollider2DEnemy : Oncollider2DFather
             CharacterScript.isGround = true;
         }
 
-        if (collision.gameObject.CompareTag(ENEMY_TAG))
-        {
-            CharacterScript.isHited = true;
-            Debug.Log("Player Touched");
-
-            //get Enemy Script of Enemy gameObject
-            CharacterScript._enemy = collision.gameObject.GetComponent<Warrior>();
-        }
-
         if (collision.gameObject.CompareTag(TRAP_TAG))
         {
             CharacterScript.isTraped = true;

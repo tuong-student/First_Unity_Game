@@ -10,12 +10,7 @@ public class Oncollider2D : Oncollider2DFather
     protected string GROUND_TAG = "Ground";
     protected string ENEMY_TAG = "Enemy";
     protected string TRAP_TAG = "Trap";
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    protected string ITEM_TAG = "Item";
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -37,6 +32,12 @@ public class Oncollider2D : Oncollider2DFather
         if (collision.gameObject.CompareTag(TRAP_TAG))
         {
             CharacterScript.isTraped = true;
+        }
+
+        if (collision.gameObject.CompareTag(ITEM_TAG))
+        {
+            collision.gameObject.GetComponent<ItemScript>().isActive = true;
+            Destroy(collision.gameObject);
         }
     }
 

@@ -7,20 +7,31 @@ public class Character : MonoBehaviour
     //Get other scripts like animation...
     [SerializeField]
     internal AnimationScript anim;
-
     [SerializeField]
     internal Oncollider2DFather oncollider2DScript;
-
     [SerializeField]
     internal Movement movementScript;
 
+    [SerializeField]
+    internal SpriteRenderer sr;
     [SerializeField]
     internal Transform RespawnPoint;
 
     public HealthBar healthBar;
 
+    public Transform RightattackPoint;
+    public Transform LeftattackPoint;
+
+    public float attackRange;
+    public LayerMask enemyLayers;
+
+    //Audio
+    public AudioSource attackSound;
+    public AudioSource hitSound;
+    public AudioSource deadSound;
+
     //Basic variales
-    public int _max_health = 100;
+    public int _max_health;
     public int _current_health;
     public int _damage = 10;
     public int _mana = 100;
@@ -28,6 +39,8 @@ public class Character : MonoBehaviour
     public int _max_Speed = 50;
     public int _jump_Force = 10;
     public string _character_Name;
+    public float attackRate = 2;
+    float nexAttackTime = 0;
 
     //Locgic variables
     internal bool _isDead = false;
@@ -47,18 +60,31 @@ public class Character : MonoBehaviour
     internal float movementY;
 
     internal Rigidbody2D myBody;
-    internal SpriteRenderer sr;
+    
 
     public void Awaken()
     {
         myBody = GetComponent<Rigidbody2D>();
-        sr = GetComponent<SpriteRenderer>();
         current_health = max_health;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (RightattackPoint == null || LeftattackPoint == null) return;
+        if (sr.flipX)
+        {
+            Gizmos.DrawWireSphere(LeftattackPoint.position, attackRange);
+        }
+        else
+        {
+            Gizmos.DrawWireSphere(RightattackPoint.position, attackRange);
+        }
     }
 
     public void ReadInput()
     {
         if (current_health <= 0) isDead = true;
+        if (current_health > max_health) current_health = max_health;
         if (!isDead)
         {
 
@@ -67,11 +93,15 @@ public class Character : MonoBehaviour
                 isJumpPress = true;
             }
 
-            if (Input.GetKeyDown(KeyCode.J) && !isAttacking)
+            if(Time.time >= nexAttackTime)
             {
-                isAttackPress = true;
+                //Limit how many attack per second
+                if (Input.GetKeyDown(KeyCode.J) && !isAttacking)
+                {
+                    isAttackPress = true;
+                    nexAttackTime = Time.time + 1 / attackRate;
+                }
             }
-
         }
         else
         {
@@ -90,11 +120,11 @@ public class Character : MonoBehaviour
         if (!isDead)
         {
 
-            movementScript.Attach();
+            movementScript.Attack();
 
             movementScript.RunAndJump(movementX);
 
-            movementScript.Hit();
+            if(isHited) movementScript.Hit(_enemy.damage);
 
         }
         else
@@ -105,6 +135,8 @@ public class Character : MonoBehaviour
         }
     }
 
+
+    //Contructor
     public bool isDead
     {
         get { return this._isDead; }

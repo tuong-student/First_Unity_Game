@@ -24,11 +24,6 @@ public class Door : MonoBehaviour
         StartCoroutine(SpawnMonster());
     }
 
-    private void Update()
-    {
-        
-    }
-
     IEnumerator SpawnMonster()
     {
 
@@ -49,7 +44,7 @@ public class Door : MonoBehaviour
                 int LeftRandomIndex = Random.Range(0, Left_Open_Doors.Length);
                 spawedEnemy.transform.position = Left_Open_Doors[LeftRandomIndex].position;
                 spawedEnemy.GetComponent<Enemy>().speed = Random.Range(4, 10);
-                spawedEnemy.transform.localScale = new Vector3(-1f, 1f, 1f);
+                spawedEnemy.transform.localScale = new Vector3(-1f, 1f, 1f); //turn sprite
             }
             else
             {

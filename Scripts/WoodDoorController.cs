@@ -20,6 +20,9 @@ public class WoodDoorController : MonoBehaviour
     [SerializeField]
     private Text winText;
 
+    //Audio
+    public AudioSource increaseSound;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -61,13 +64,16 @@ public class WoodDoorController : MonoBehaviour
         while (true)
         {
 
-            yield return new WaitForSeconds(1f);
             if (isPlayer && Player.current_health > 0)
             {
+                yield return new WaitForSeconds(2f);
+                if (!isPlayer) continue;
                 WoodDoorBarIncrease();
             }
             else
             {
+                yield return new WaitForSeconds(3f);
+                if (isPlayer) continue;
                 WoodDoorBarDecresase();
             }
 
@@ -77,14 +83,11 @@ public class WoodDoorController : MonoBehaviour
     void WoodDoorBarIncrease()
     {
         slider.value += 1;
-        Debug.Log("increase");
-
+        increaseSound.Play();
     }
 
     void WoodDoorBarDecresase()
     {
         slider.value -= 1;
-        Debug.Log("Decrease");
-
     }
 }

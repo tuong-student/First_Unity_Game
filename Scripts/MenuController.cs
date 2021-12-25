@@ -8,11 +8,9 @@ public class MenuController : MonoBehaviour
 {
     public Button volumeOnBtn;
     public Button volumeOffBtn;
-    private AudioSource Audio;
 
     private void Start()
     {
-        Audio = GetComponent<AudioSource>();
         VolumeOn();
     }
 
@@ -23,16 +21,15 @@ public class MenuController : MonoBehaviour
     
     public void VolumeOn()
     {
-        Audio.Play();
-        volumeOffBtn.gameObject.SetActive(true);
-        volumeOnBtn.gameObject.SetActive(false);
+        if (volumeOffBtn == null) return;
+        volumeOffBtn.gameObject.SetActive(false);
+        volumeOnBtn.gameObject.SetActive(true);
     }
 
     public void VolumeOff()
     {
-        Audio.Pause();
-        volumeOffBtn.gameObject.SetActive(false);
-        volumeOnBtn.gameObject.SetActive(true);
+        volumeOffBtn.gameObject.SetActive(true);
+        volumeOnBtn.gameObject.SetActive(false);
     }
     
 }

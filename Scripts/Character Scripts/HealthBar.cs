@@ -27,11 +27,10 @@ public class HealthBar : MonoBehaviour
     //Follow Character
     private void LateUpdate()
     {
-
-        tempPos = transform.position;
+        tempPos = slider.gameObject.transform.position;
         tempPos.x = character.position.x + offSet.x;
         tempPos.y = character.position.y + offSet.y;
 
-        transform.position = tempPos;
+        slider.gameObject.transform.position = tempPos;
     }
 }
