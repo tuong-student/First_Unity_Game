@@ -51,9 +51,6 @@ public class EnemyMovementScript : MonoBehaviour
         {
             enemyScript.animationScript.Dead();
 
-            // Play Sound
-            enemyScript.deadSound.Play();
-
             //Go throught
             GetComponent<Collider2D>().isTrigger = true;
 

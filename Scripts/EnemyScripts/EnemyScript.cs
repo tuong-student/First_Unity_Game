@@ -13,8 +13,6 @@ public class EnemyScript : MonoBehaviour
     [SerializeField] internal SpriteRenderer sr;
     [SerializeField] internal Rigidbody2D myBody;
 
-    [SerializeField] internal AudioSource deadSound;
-
     // Basic Variable
     internal float max_health = 100;
     [SerializeField]
